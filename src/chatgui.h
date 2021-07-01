@@ -3,38 +3,31 @@
 
 #include <wx/wx.h>
 
-class ChatLogic; // forward declaration
+#include <memory>
+
+class ChatLogic; 
 
 // middle part of the window containing the dialog between user and chatbot
 class ChatBotPanelDialog : public wxScrolledWindow
 {
 private:
-    // control elements
     wxBoxSizer *_dialogSizer;
     wxBitmap _image;
 
-    //// STUDENT CODE
-    ////
-
-    ChatLogic *_chatLogic;
-
-    ////
-    //// EOF STUDENT CODE
+    // Task 1 - replaced ChatLogic *_chatLogic raw pointer with unique_ptr for an exclusive resource to class ChatbotPanelDialog
+    std::unique_ptr<ChatLogic> _chatLogic;
 
 public:
-    // constructor / destructor
     ChatBotPanelDialog(wxWindow *parent, wxWindowID id);
     ~ChatBotPanelDialog();
 
-    // getter / setter
-    ChatLogic *GetChatLogicHandle() { return _chatLogic; }
+    // Task 1 - return the row pointer managed by _chatLogic unique_ptr
+    ChatLogic *GetChatLogicHandle() const { return _chatLogic.get(); }
 
-    // events
     void paintEvent(wxPaintEvent &evt);
     void paintNow();
     void render(wxDC &dc);
 
-    // proprietary functions
     void AddDialogItem(wxString text, bool isFromUser = true);
     void PrintChatbotResponse(std::string response);
 
@@ -45,12 +38,10 @@ public:
 class ChatBotPanelDialogItem : public wxPanel
 {
 private:
-    // control elements
     wxStaticBitmap *_chatBotImg;
     wxStaticText *_chatBotTxt;
 
 public:
-    // constructor / destructor
     ChatBotPanelDialogItem(wxPanel *parent, wxString text, bool isFromUser);
 };
 
@@ -58,29 +49,23 @@ public:
 class ChatBotFrame : public wxFrame
 {
 private:
-    // control elements
     ChatBotPanelDialog *_panelDialog;
     wxTextCtrl *_userTextCtrl;
 
-    // events
     void OnEnter(wxCommandEvent &WXUNUSED(event));
 
 public:
-    // constructor / desctructor
     ChatBotFrame(const wxString &title);
 };
 
 // control panel for background image display
 class ChatBotFrameImagePanel : public wxPanel
 {
-    // control elements
     wxBitmap _image;
 
 public:
-    // constructor / desctructor
     ChatBotFrameImagePanel(wxFrame *parent);
 
-    // events
     void paintEvent(wxPaintEvent &evt);
     void paintNow();
     void render(wxDC &dc);
@@ -92,7 +77,6 @@ public:
 class ChatBotApp : public wxApp
 {
 public:
-    // events
     virtual bool OnInit();
 };
 
